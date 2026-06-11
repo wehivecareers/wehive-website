@@ -207,3 +207,64 @@ function openLightbox(imgSrc) {
 function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
 }
+
+// --- Phase 4: Dynamic Testimonials Page ---
+document.addEventListener("DOMContentLoaded", () => {
+    const testimonialContainer = document.getElementById("testimonial-container");
+    
+    // Only run this script if we are on the testimonials page
+    if (testimonialContainer) {
+        const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
+        
+        // IMPORTANT: Replace the word YOUR_TESTIMONIALS_GID below with the actual GID number of your Testimonials tab!
+        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=YOUR_TESTIMONIALS_GID`;
+
+        fetch(testimonialUrl)
+            .then(res => res.text())
+            .then(text => {
+                const data = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = data.table.rows;
+                
+                let reviewsFound = false;
+                testimonialContainer.innerHTML = ""; // Clear loading text
+
+                rows.forEach(row => {
+                    // Check if row exists and has the 5 required columns
+                    if (row && row.c && row.c[0] && row.c[1] && row.c[2] && row.c[3] && row.c[4]) {
+                        const photoUrl = row.c[0].v;
+                        const studentName = row.c[1].v;
+                        const companyName = row.c[2].v;
+                        const reviewText = row.c[3].v;
+                        const status = row.c[4].v;
+
+                        // Only render if marked "Active"
+                        if (status.toString().toLowerCase() === "active") {
+                            reviewsFound = true;
+                            const card = document.createElement("div");
+                            card.className = "testi-card";
+                            card.innerHTML = `
+                                <i class="fa-solid fa-quote-right quote-icon"></i>
+                                <p class="testi-text">"${reviewText}"</p>
+                                <div class="testi-profile">
+                                    <img src="${photoUrl}" alt="${studentName}">
+                                    <div class="testi-info">
+                                        <h4>${studentName}</h4>
+                                        <p>${companyName}</p>
+                                    </div>
+                                </div>
+                            `;
+                            testimonialContainer.appendChild(card);
+                        }
+                    }
+                });
+
+                if (!reviewsFound) {
+                    testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Student reviews will appear here once added to the Google Sheet.</p>";
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching testimonials:", err);
+                testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Error loading reviews. Please check Google Sheet permissions or GID.</p>";
+            });
+    }
+});
