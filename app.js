@@ -242,7 +242,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (status === "active") {
                 activeFound = true;
                 const card = document.createElement("div");
-                card.className = "swiper-slide testi-card";
+card.className = "swiper-slide";
+
+card.innerHTML = `
+<div class="testi-card">
+   ...
+</div>
+`;
                 card.innerHTML = `
                     <i class="fa-solid fa-quote-right quote-icon"></i>
                     <p class="testi-text">"${reviewText}"</p>
