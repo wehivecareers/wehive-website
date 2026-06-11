@@ -208,61 +208,70 @@ function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
 }
 
-// --- Phase 4: Dynamic Testimonials Page (FINAL INDESTRUCTIBLE FIX) ---
+// --- Phase 4: Dynamic Testimonials Page (FINAL ATTEMPT) ---
 document.addEventListener("DOMContentLoaded", async () => {
-  const testimonialContainer = document.getElementById("testimonial-container");
-  if (!testimonialContainer) return;
+    const testimonialContainer = document.getElementById("testimonial-container");
+    if (!testimonialContainer) return;
 
-  const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
-  const gid = "902671307";
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+    const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
+    const gid = "902671307";
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
-  try {
-    testimonialContainer.innerHTML = "<p>Loading testimonials...</p>";
+    try {
+        console.log("Fetching Testimonials from GID:", gid);
+        const res = await fetch(url, { cache: "no-store" });
+        const text = await res.text();
 
-    const res = await fetch(url, { cache: "no-store" });
-    const text = await res.text();
+        // 1. Validate response
+        const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+        if (!match) throw new Error("Could not parse Google Sheet response");
 
-    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
-    if (!match) throw new Error("Invalid Google Sheets response");
+        const data = JSON.parse(match[1]);
+        const rows = data.table?.rows || [];
 
-    const data = JSON.parse(match[1]);
-    const rows = data.table?.rows || [];
+        if (rows.length === 0) {
+            testimonialContainer.innerHTML = "<p>No data found in the sheet. Ensure you are on the correct GID tab.</p>";
+            return;
+        }
 
-    testimonialContainer.innerHTML = "";
+        testimonialContainer.innerHTML = ""; // Clear loader
 
-    rows.forEach((row) => {
-      const c = row.c || [];
+        let activeFound = false;
+        rows.forEach((row, index) => {
+            // Skip header (index 0)
+            if (index === 0) return;
 
-      const photoUrl = c[0]?.v || "";
-      const studentName = c[1]?.v || "Student";
-      const companyName = c[2]?.v || "";
-      const reviewText = c[3]?.v || "";
-      const status = String(c[4]?.v || "").toLowerCase();
+            const c = row.c || [];
+            const photoUrl = c[0]?.v || "";
+            const studentName = c[1]?.v || "Student";
+            const companyName = c[2]?.v || "";
+            const reviewText = c[3]?.v || "";
+            const status = String(c[4]?.v || "").toLowerCase().trim();
 
-      if (status !== "active") return;
+            if (status === "active") {
+                activeFound = true;
+                const card = document.createElement("div");
+                card.className = "testi-card";
+                card.innerHTML = `
+                    <i class="fa-solid fa-quote-right quote-icon"></i>
+                    <p class="testi-text">"${reviewText}"</p>
+                    <div class="testi-profile">
+                        <img src="${photoUrl}" alt="${studentName}">
+                        <div class="testi-info">
+                            <h4>${studentName}</h4>
+                            <p>${companyName}</p>
+                        </div>
+                    </div>
+                `;
+                testimonialContainer.appendChild(card);
+            }
+        });
 
-      const card = document.createElement("div");
-      card.className = "testi-card";
-      card.innerHTML = `
-        <i class="fa-solid fa-quote-right quote-icon"></i>
-        <p class="testi-text">"${reviewText}"</p>
-        <div class="testi-profile">
-          <img src="${photoUrl}" alt="${studentName}">
-          <div class="testi-info">
-            <h4>${studentName}</h4>
-            <p>${companyName}</p>
-          </div>
-        </div>
-      `;
-      testimonialContainer.appendChild(card);
-    });
-
-    if (!testimonialContainer.children.length) {
-      testimonialContainer.innerHTML = "<p>No active testimonials found.</p>";
+        if (!activeFound) {
+            testimonialContainer.innerHTML = "<p>No rows marked as 'Active' in column E.</p>";
+        }
+    } catch (err) {
+        console.error("DEBUG ERROR:", err);
+        testimonialContainer.innerHTML = `<p style='color:red;'>Error: ${err.message}</p>`;
     }
-  } catch (err) {
-    console.error("Testimonial load error:", err);
-    testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load testimonials. Check sheet access and gid.</p>";
-  }
 });
