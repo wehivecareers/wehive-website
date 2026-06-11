@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Testimonials | Wehive</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo-wrapper">
+                <img src="Logo.jpeg" alt="Wehive Logo" class="logo-img">
+                <div class="logo-text">
+                    <h2>Wehive</h2>
+                    <span>Learn • Build • Get Hired</span>
+                </div>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="placement.html">Placement</a></li>
+                <li><a href="testimonial.html" style="color: var(--secondary-color); font-weight: bold;">Testimonials</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="enquiry.html" class="btn-primary-small">Contact Us</a>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">About Us</a>
+            <a href="index.html#services">Services</a>
+            <a href="placement.html">Placement</a>
+            <a href="testimonial.html">Testimonials</a>
+            <a href="enquiry.html">Contact Us</a>
+        </div>
+    </nav>
+
+    <section class="gallery-header bg-light">
+        <div class="container section-title" style="padding-top: 50px;">
+            <h2>Student Success Stories</h2>
+            <div class="underline"></div>
+            <p>Hear directly from our candidates about their journey to landing their dream IT jobs.</p>
+        </div>
+    </section>
+
+    <section class="video-spotlight">
+        <div class="container">
+            <h3 class="sub-heading"><i class="fa-brands fa-youtube" style="color: red;"></i> Video Spotlights</h3>
+            <div class="video-grid">
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Wehive Student Review" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Wehive Placement Review" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            <p style="text-align: center; color: var(--text-light); font-size: 0.9rem; margin-top: 15px;">*Replace the youtube links in the code with your client's actual video links.</p>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <h3 class="sub-heading"><i class="fa-solid fa-quote-left" style="color: var(--accent-color);"></i> The Wall of Love</h3>
+            <div class="testimonial-grid" id="testimonial-container">
+                <p style="text-align: center; width: 100%; color: var(--text-light);">Fetching latest reviews...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h3>WEHIVE</h3>
+                <p>Your Gateway to IT Careers</p>
+            </div>
+            <div class="footer-contact">
+                <p><i class="fa-solid fa-location-dot"></i> Koranguchavadi, Salem</p>
+                <p><i class="fa-solid fa-phone"></i> +91-XXXXXXXXXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Wehive IT Training & Placement Consultancy.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
