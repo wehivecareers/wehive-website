@@ -208,7 +208,7 @@ function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
 }
 
-// --- Phase 4: Dynamic Testimonials Page (FINAL ATTEMPT) ---
+// --- Phase 4: Dynamic Testimonials Page (FINAL UPDATED WITH ZOOM) ---
 document.addEventListener("DOMContentLoaded", async () => {
     const testimonialContainer = document.getElementById("testimonial-container");
     if (!testimonialContainer) return;
@@ -218,28 +218,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
     try {
-        console.log("Fetching Testimonials from GID:", gid);
         const res = await fetch(url, { cache: "no-store" });
         const text = await res.text();
-
-        // 1. Validate response
         const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
-        if (!match) throw new Error("Could not parse Google Sheet response");
+        if (!match) throw new Error("Could not parse Google Sheet");
 
         const data = JSON.parse(match[1]);
         const rows = data.table?.rows || [];
 
-        if (rows.length === 0) {
-            testimonialContainer.innerHTML = "<p>No data found in the sheet. Ensure you are on the correct GID tab.</p>";
-            return;
-        }
-
-        testimonialContainer.innerHTML = ""; // Clear loader
+        testimonialContainer.innerHTML = ""; 
 
         let activeFound = false;
         rows.forEach((row, index) => {
-            // Skip header (index 0)
-            if (index === 0) return;
+            if (index === 0) return; // Skip header
 
             const c = row.c || [];
             const photoUrl = c[0]?.v || "";
@@ -256,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <i class="fa-solid fa-quote-right quote-icon"></i>
                     <p class="testi-text">"${reviewText}"</p>
                     <div class="testi-profile">
-                        <img src="${photoUrl}" alt="${studentName}">
+                        <img src="${photoUrl}" alt="${studentName}" onclick="openLightbox('${photoUrl}')" style="cursor: zoom-in;">
                         <div class="testi-info">
                             <h4>${studentName}</h4>
                             <p>${companyName}</p>
@@ -268,10 +259,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         if (!activeFound) {
-            testimonialContainer.innerHTML = "<p>No rows marked as 'Active' in column E.</p>";
+            testimonialContainer.innerHTML = "<p>No active testimonials found.</p>";
         }
     } catch (err) {
         console.error("DEBUG ERROR:", err);
         testimonialContainer.innerHTML = `<p style='color:red;'>Error: ${err.message}</p>`;
     }
 });
+
+// ADD THESE TWO FUNCTIONS AT THE VERY BOTTOM OF app.js IF YOU DON'T HAVE THEM
+function openLightbox(imgSrc) {
+    const modal = document.getElementById('lightbox-modal');
+    if (modal) {
+        document.getElementById('lightbox-img').src = imgSrc;
+        modal.style.display = 'flex';
+    }
+}
+function closeLightbox() {
+    document.getElementById('lightbox-modal').style.display = 'none';
+}
