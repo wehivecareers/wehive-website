@@ -115,3 +115,95 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 });
+
+// --- Phase 3: Dynamic Success Gallery (Placement Page) ---
+document.addEventListener("DOMContentLoaded", () => {
+    const galleryContainer = document.getElementById("gallery-container");
+    
+    // Only run this script if we are on the placement page
+    if (galleryContainer) {
+        const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
+        // Using the exact Gallery GID you provided
+        const galleryUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=129193964`;
+
+        fetch(galleryUrl)
+            .then(res => res.text())
+            .then(text => {
+                const data = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = data.table.rows;
+                
+                let cardsFound = false;
+                galleryContainer.innerHTML = ""; // Clear loading text
+
+                rows.forEach(row => {
+                    // Check if row exists and has the 5 required columns
+                    if (row && row.c && row.c[0] && row.c[1] && row.c[2] && row.c[3] && row.c[4]) {
+                        const imgUrl = row.c[0].v;
+                        const studentName = row.c[1].v;
+                        const description = row.c[2].v;
+                        const category = row.c[3].v;
+                        const status = row.c[4].v;
+
+                        // Only render if the client marked Status as "Active"
+                        if (status.toString().toLowerCase() === "active") {
+                            cardsFound = true;
+                            const card = document.createElement("div");
+                            card.className = "success-card";
+                            card.setAttribute("data-category", category);
+                            card.innerHTML = `
+                                <div class="card-img-wrapper" onclick="openLightbox('${imgUrl}')">
+                                    <img src="${imgUrl}" alt="${studentName}">
+                                    <div class="hover-overlay">
+                                        <span><i class="fas fa-search-plus"></i> View</span>
+                                    </div>
+                                </div>
+                                <div class="card-info">
+                                    <h4>${studentName}</h4>
+                                    <p>${description}</p>
+                                </div>
+                            `;
+                            galleryContainer.appendChild(card);
+                        }
+                    }
+                });
+
+                if (!cardsFound) {
+                    galleryContainer.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Gallery images will appear here once added to the Google Sheet.</p>";
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching gallery:", err);
+                galleryContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Error loading gallery. Please check Google Sheet permissions.</p>";
+            });
+    }
+});
+
+// Logic for the Filter Buttons
+function filterGallery(category, btnElement) {
+    // 1. Highlight the clicked button
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    // 2. Show/Hide the cards
+    const cards = document.querySelectorAll('.success-card');
+    cards.forEach(card => {
+        if (category === 'All' || card.getAttribute('data-category') === category) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Logic for the Popup Lightbox
+function openLightbox(imgSrc) {
+    const modal = document.getElementById('lightbox-modal');
+    const modalImg = document.getElementById('lightbox-img');
+    modalImg.src = imgSrc;
+    modal.style.display = 'flex';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox-modal').style.display = 'none';
+}
