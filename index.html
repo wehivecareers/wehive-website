@@ -10,16 +10,17 @@
 <body>
     <nav class="navbar">
         <div class="container nav-container">
-            <div class="logo">
-    <a href="#home" class="logo-wrapper">
-        <img src="./Logo.jpeg" alt="Wehive Logo">
+            <div class="logo-wrapper">
+                <div class="logo-text">
+                    <h2>Wehive</h2>
+                    <span>Learn • Build • Get Hired</span>
+                </div>
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
 
-        <div class="logo-text">
-            <h2>Wehive</h2>
-            <span>Learn • Build • Get Hired</span>
-        </div>
-    </a>
-</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
@@ -31,6 +32,16 @@
                 <a href="enquiry.html" class="btn-secondary-small"><i class="fa-solid fa-file-arrow-up"></i> Upload Resume</a>
                 <a href="enquiry.html" class="btn-primary-small">Contact Us</a>
             </div>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home" onclick="toggleMenu()">Home</a>
+            <a href="#about" onclick="toggleMenu()">About Us</a>
+            <a href="#services" onclick="toggleMenu()">Services</a>
+            <a href="placement.html">Placement</a>
+            <a href="#testimonials" onclick="toggleMenu()">Testimonials</a>
+            <a href="enquiry.html">Upload Resume</a>
+            <a href="enquiry.html">Contact Us</a>
         </div>
     </nav>
 
