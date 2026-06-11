@@ -212,12 +212,11 @@ function closeLightbox() {
 document.addEventListener("DOMContentLoaded", () => {
     const testimonialContainer = document.getElementById("testimonial-container");
     
-    // Only run this script if we are on the testimonials page
+    // Only run this if we are on the testimonials page
     if (testimonialContainer) {
         const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
-        
-        // IMPORTANT: Replace the word YOUR_TESTIMONIALS_GID below with the actual GID number of your Testimonials tab!
-        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=YOUR_TESTIMONIALS_GID`;
+        // REPLACE THE NUMBER BELOW WITH YOUR ACTUAL GID FROM THE URL
+        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=123456789`;
 
         fetch(testimonialUrl)
             .then(res => res.text())
@@ -226,10 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const rows = data.table.rows;
                 
                 let reviewsFound = false;
-                testimonialContainer.innerHTML = ""; // Clear loading text
+                testimonialContainer.innerHTML = ""; 
 
                 rows.forEach(row => {
-                    // Check if row exists and has the 5 required columns
                     if (row && row.c && row.c[0] && row.c[1] && row.c[2] && row.c[3] && row.c[4]) {
                         const photoUrl = row.c[0].v;
                         const studentName = row.c[1].v;
@@ -237,8 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const reviewText = row.c[3].v;
                         const status = row.c[4].v;
 
-                        // Only render if marked "Active"
-                        if (status.toString().toLowerCase() === "active") {
+                        if (status && status.toString().toLowerCase() === "active") {
                             reviewsFound = true;
                             const card = document.createElement("div");
                             card.className = "testi-card";
@@ -259,12 +256,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 if (!reviewsFound) {
-                    testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Student reviews will appear here once added to the Google Sheet.</p>";
+                    testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>No active reviews found.</p>";
                 }
             })
             .catch(err => {
                 console.error("Error fetching testimonials:", err);
-                testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Error loading reviews. Please check Google Sheet permissions or GID.</p>";
+                testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Error loading reviews.</p>";
             });
     }
 });
