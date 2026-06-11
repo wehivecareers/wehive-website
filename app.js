@@ -208,7 +208,7 @@ function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
 }
 
-// --- Phase 4: Dynamic Testimonials Page (AGGRESSIVE FIX) ---
+// --- Phase 4: Dynamic Testimonials Page (FINAL INDESTRUCTIBLE FIX) ---
 document.addEventListener("DOMContentLoaded", () => {
     const testimonialContainer = document.getElementById("testimonial-container");
     
@@ -223,22 +223,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 const rows = data.table.rows;
                 
-                // Debugging: This will tell us if it sees any rows at all
-                console.log("Raw Testimonial Rows:", rows);
+                testimonialContainer.innerHTML = ""; // Clear loader
 
-                testimonialContainer.innerHTML = ""; 
+                rows.forEach((row, index) => {
+                    // Skip the header row (index 0) if it contains the word "PhotoURL"
+                    if (index === 0) return; 
 
-                rows.forEach(row => {
-                    // We check if row exists, and then grab cell values safely
+                    // Ensure the row and cells exist
                     if (row && row.c) {
-                        const photoUrl = row.c[0] ? row.c[0].v : "";
-                        const studentName = row.c[1] ? row.c[1].v : "Anonymous";
-                        const companyName = row.c[2] ? row.c[2].v : "";
-                        const reviewText = row.c[3] ? row.c[3].v : "No review text.";
-                        const status = row.c[4] ? row.c[4].v : "";
+                        // Safely extract values, defaulting to empty strings if missing
+                        const photoUrl = (row.c[0] && row.c[0].v) ? row.c[0].v : "";
+                        const studentName = (row.c[1] && row.c[1].v) ? row.c[1].v : "Student";
+                        const companyName = (row.c[2] && row.c[2].v) ? row.c[2].v : "";
+                        const reviewText = (row.c[3] && row.c[3].v) ? row.c[3].v : "";
+                        const status = (row.c[4] && row.c[4].v) ? row.c[4].v.toString().toLowerCase() : "";
 
-                        // Force lowercase comparison to avoid typo errors
-                        if (status && status.toString().toLowerCase() === "active") {
+                        // Only render if marked "active"
+                        if (status === "active") {
                             const card = document.createElement("div");
                             card.className = "testi-card";
                             card.innerHTML = `
@@ -259,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.error("DEBUG ERROR:", err);
-                testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load. Check Console (F12).</p>";
+                testimonialContainer.innerHTML = "<p style='color:red;'>Check Google Sheet Permissions.</p>";
             });
     }
 });
