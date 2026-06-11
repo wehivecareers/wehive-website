@@ -208,34 +208,37 @@ function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
 }
 
-// --- Phase 4: Dynamic Testimonials Page ---
+// --- Phase 4: Dynamic Testimonials Page (AGGRESSIVE FIX) ---
 document.addEventListener("DOMContentLoaded", () => {
     const testimonialContainer = document.getElementById("testimonial-container");
     
-    // Only run this if we are on the testimonials page
     if (testimonialContainer) {
         const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
-        // REPLACE THE NUMBER BELOW WITH YOUR ACTUAL GID FROM THE URL
-        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=902671307`;
+        const gid = "902671307";
+        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+
         fetch(testimonialUrl)
             .then(res => res.text())
             .then(text => {
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 const rows = data.table.rows;
                 
-                let reviewsFound = false;
+                // Debugging: This will tell us if it sees any rows at all
+                console.log("Raw Testimonial Rows:", rows);
+
                 testimonialContainer.innerHTML = ""; 
 
                 rows.forEach(row => {
-                    if (row && row.c && row.c[0] && row.c[1] && row.c[2] && row.c[3] && row.c[4]) {
-                        const photoUrl = row.c[0].v;
-                        const studentName = row.c[1].v;
-                        const companyName = row.c[2].v;
-                        const reviewText = row.c[3].v;
-                        const status = row.c[4].v;
+                    // We check if row exists, and then grab cell values safely
+                    if (row && row.c) {
+                        const photoUrl = row.c[0] ? row.c[0].v : "";
+                        const studentName = row.c[1] ? row.c[1].v : "Anonymous";
+                        const companyName = row.c[2] ? row.c[2].v : "";
+                        const reviewText = row.c[3] ? row.c[3].v : "No review text.";
+                        const status = row.c[4] ? row.c[4].v : "";
 
+                        // Force lowercase comparison to avoid typo errors
                         if (status && status.toString().toLowerCase() === "active") {
-                            reviewsFound = true;
                             const card = document.createElement("div");
                             card.className = "testi-card";
                             card.innerHTML = `
@@ -253,14 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     }
                 });
-
-                if (!reviewsFound) {
-                    testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>No active reviews found.</p>";
-                }
             })
             .catch(err => {
-                console.error("Error fetching testimonials:", err);
-                testimonialContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Error loading reviews.</p>";
+                console.error("DEBUG ERROR:", err);
+                testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load. Check Console (F12).</p>";
             });
     }
 });
