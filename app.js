@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(text => {
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 const rows = data.table.rows;
+                console.log("Testimonials Data:", rows);
                 
                 testimonialContainer.innerHTML = ""; // Clear loader
 
