@@ -216,8 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (testimonialContainer) {
         const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
         // REPLACE THE NUMBER BELOW WITH YOUR ACTUAL GID FROM THE URL
-        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=123456789`;
-
+        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=902671307`;
         fetch(testimonialUrl)
             .then(res => res.text())
             .then(text => {
