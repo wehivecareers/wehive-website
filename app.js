@@ -48,11 +48,28 @@ document.addEventListener("DOMContentLoaded", () => {
             // Strip Google's JSON wrapper to get the raw data
             const data = JSON.parse(text.substr(47).slice(0, -2));
             const rows = data.table.rows;
-
+            console.log("Counter Data:", rows);
+            
             // Trigger animations using the fetched data from the sheet
-            if(rows[0] && rows[0].c[1]) animateCounter("graduates-count", rows[0].c[1].v.toString());
-            if(rows[1] && rows[1].c[1]) animateCounter("partners-count", rows[1].c[1].v.toString());
-            if(rows[2] && rows[2].c[1]) animateCounter("success-rate", rows[2].c[1].v.toString());
+            rows.forEach((row,index)=>{
+
+    if(!row.c[1] || !row.c[1].v) return;
+
+    const value = row.c[1].v.toString();
+
+    if(index === 0){
+        animateCounter("graduates-count", value);
+    }
+
+    if(index === 1){
+        animateCounter("partners-count", value);
+    }
+
+    if(index === 2){
+        animateCounter("success-rate", value);
+    }
+
+});
         })
         .catch(err => console.error("Error fetching counters:", err));
 
