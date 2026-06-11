@@ -182,11 +182,34 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
         text-align: center;
     }
 
-    .nav-links {
-        display: none;
+   @media (max-width:768px){
+
+    .nav-container{
+        flex-direction:column;
+        gap:10px;
     }
 
-    .nav-buttons {
-        display: none;
+    .nav-links{
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:12px;
     }
+
+    .nav-buttons{
+        display:none;
+    }
+
+    .logo img{
+        height:50px;
+    }
+
+    .logo-text h2{
+        font-size:1.2rem;
+    }
+
+    .logo-text span{
+        font-size:0.7rem;
+    }
+}
 }
