@@ -209,59 +209,65 @@ function closeLightbox() {
 }
 
 // --- Phase 4: Dynamic Testimonials Page (FINAL INDESTRUCTIBLE FIX) ---
-document.addEventListener("DOMContentLoaded", () => {
-    const testimonialContainer = document.getElementById("testimonial-container");
-    
-    if (testimonialContainer) {
-        const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
-        const gid = "902671307";
-        const testimonialUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const testimonialContainer = document.getElementById("testimonial-container");
+  if (!testimonialContainer) return;
 
-        fetch(testimonialUrl)
-            .then(res => res.text())
-            .then(text => {
-                const data = JSON.parse(text.substr(47).slice(0, -2));
-                const rows = data.table.rows;
-                console.log("Testimonials Data:", rows);
-                
-                testimonialContainer.innerHTML = ""; // Clear loader
+  const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
+  const gid = "902671307";
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
-                rows.forEach((row, index) => {
-                    // Skip the header row (index 0) if it contains the word "PhotoURL"
-                    if (index === 0) return; 
+  try {
+    testimonialContainer.innerHTML = "<p>Loading testimonials...</p>";
 
-                    // Ensure the row and cells exist
-                    if (row && row.c) {
-                        // Safely extract values, defaulting to empty strings if missing
-                        const photoUrl = (row.c[0] && row.c[0].v) ? row.c[0].v : "";
-                        const studentName = (row.c[1] && row.c[1].v) ? row.c[1].v : "Student";
-                        const companyName = (row.c[2] && row.c[2].v) ? row.c[2].v : "";
-                        const reviewText = (row.c[3] && row.c[3].v) ? row.c[3].v : "";
-                        const status = (row.c[4] && row.c[4].v) ? row.c[4].v.toString().toLowerCase() : "";
+    const res = await fetch(url, { cache: "no-store" });
+    const text = await res.text();
 
-                        // Only render if marked "active"
-                        if (status === "active") {
-                            const card = document.createElement("div");
-                            card.className = "testi-card";
-                            card.innerHTML = `
-                                <i class="fa-solid fa-quote-right quote-icon"></i>
-                                <p class="testi-text">"${reviewText}"</p>
-                                <div class="testi-profile">
-                                    <img src="${photoUrl}" alt="${studentName}">
-                                    <div class="testi-info">
-                                        <h4>${studentName}</h4>
-                                        <p>${companyName}</p>
-                                    </div>
-                                </div>
-                            `;
-                            testimonialContainer.appendChild(card);
-                        }
-                    }
-                });
-            })
-            .catch(err => {
-                console.error("DEBUG ERROR:", err);
-                testimonialContainer.innerHTML = "<p style='color:red;'>Check Google Sheet Permissions.</p>";
-            });
+    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+    if (!match) {
+      throw new Error("Google Sheets response format not found");
     }
+
+    const data = JSON.parse(match[1]);
+    const rows = data.table && data.table.rows ? data.table.rows : [];
+
+    testimonialContainer.innerHTML = "";
+
+    rows.forEach((row) => {
+      const cells = row.c || [];
+
+      const photoUrl = cells[0]?.v || "";
+      const studentName = cells[1]?.v || "Student";
+      const companyName = cells[2]?.v || "";
+      const reviewText = cells[3]?.v || "";
+      const status = String(cells[4]?.v || "").toLowerCase();
+
+      if (status !== "active") return;
+
+      const card = document.createElement("div");
+      card.className = "testi-card";
+      card.innerHTML = `
+        <i class="fa-solid fa-quote-right quote-icon"></i>
+        <p class="testi-text">"${reviewText}"</p>
+        <div class="testi-profile">
+          <img src="${photoUrl}" alt="${studentName}">
+          <div class="testi-info">
+            <h4>${studentName}</h4>
+            <p>${companyName}</p>
+          </div>
+        </div>
+      `;
+
+      testimonialContainer.appendChild(card);
+    });
+
+    if (!testimonialContainer.children.length) {
+      testimonialContainer.innerHTML = "<p>No active testimonials found.</p>";
+    }
+  } catch (err) {
+    console.error("Testimonial load error:", err);
+    testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load testimonials. Check sheet sharing, gid, and browser console.</p>";
+  }
 });
+</script>
