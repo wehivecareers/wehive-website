@@ -47,15 +47,24 @@ body { color: var(--text-dark); line-height: 1.6; background-color: var(--white)
 
 /* Clean Hero Section (Plain Transparent Overlay over Background Image) */
 .hero { 
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./BG.jpeg') center/cover no-repeat;
+    /* Make sure your file is named EXACTLY BG.jpeg in your repository */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./BG.jpeg') center/cover no-repeat;
     color: var(--white); 
-    padding: 130px 0 110px 0; 
-    text-align: center; 
+    padding: 150px 0 130px 0; 
+    text-align: left; /* Aligns text to the left to match your new reference image */
 }
-.hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
+
+/* Keeps the text on the left side so it doesn't cover the right-side graphics */
+.hero-content {
+    max-width: 600px; 
+}
+
+.hero h1 { font-size: 3.8rem; margin-bottom: 20px; line-height: 1.2; }
 .highlight { color: #fbd38d; }
-.hero p { font-size: 1.15rem; max-width: 750px; margin: 0 auto 30px auto; opacity: 0.95; line-height: 1.8; }
-.hero-buttons { display: flex; justify-content: center; gap: 15px; }
+.hero p { font-size: 1.15rem; margin-bottom: 35px; opacity: 0.95; line-height: 1.8; }
+
+/* Aligns the buttons to the left */
+.hero-buttons { display: flex; justify-content: flex-start; gap: 15px; }
 
 /* Dynamic Placement Counters */
 .counter-section { background-color: transparent; padding: 0 0 40px 0; position: relative; z-index: 10; margin-top: -50px; max-width: 1050px; margin-left: auto; margin-right: auto; }
