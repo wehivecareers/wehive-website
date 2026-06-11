@@ -34,9 +34,20 @@ body { color: var(--text-dark); line-height: 1.6; background-color: var(--white)
 
 /* Navbar & New Navigation Buttons */
 .navbar { background-color: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
-.nav-container { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
 .logo h2 { color: var(--primary-color); font-size: 1.8rem; line-height: 1; margin-bottom: 2px;}
 .logo span { font-size: 0.8rem; color: var(--text-light); letter-spacing: 1px; }
+.logo img {
+    height: 65px;
+    max-width: 220px;
+    object-fit: contain;
+    display: block;
+}
 .nav-links { list-style: none; display: flex; align-items: center; gap: 25px; }
 .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; }
 .nav-links a:hover { color: var(--secondary-color); }
@@ -92,10 +103,15 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
 /* Mobile Responsive */
 @media (max-width: 768px) {
 
+    .logo img {
+        height: 50px;
+        max-width: 180px;
+    }
+
     .hero {
         padding: 100px 0 80px 0;
         text-align: center;
-        background-position: center right;
+        background-position: center center;
     }
 
     .hero-content {
@@ -146,5 +162,4 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
     .nav-buttons {
         display: none;
     }
-
 }
