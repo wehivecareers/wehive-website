@@ -237,3 +237,32 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
     /* Center Footer */
     .footer-content { flex-direction: column; gap: 30px; text-align: center; }
 }
+
+/* =========================================
+   Placement Gallery Styles
+   ========================================= */
+.gallery-section { padding: 40px 0 90px 0; }
+.gallery-filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; }
+.filter-btn { padding: 10px 20px; border: 2px solid var(--secondary-color); background: transparent; color: var(--secondary-color); border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.filter-btn:hover, .filter-btn.active { background: var(--secondary-color); color: var(--white); }
+
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+.success-card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: transform 0.3s; }
+.success-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+
+.card-img-wrapper { position: relative; width: 100%; height: 220px; overflow: hidden; cursor: zoom-in; }
+.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+.success-card:hover .card-img-wrapper img { transform: scale(1.1); }
+.hover-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 54, 93, 0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: white; font-size: 1.2rem; font-weight: bold; }
+.success-card:hover .hover-overlay { opacity: 1; }
+
+.card-info { padding: 20px; border-top: 3px solid var(--accent-color); }
+.card-info h4 { color: var(--primary-color); font-size: 1.2rem; margin-bottom: 5px; }
+.card-info p { color: var(--text-light); font-size: 0.95rem; }
+
+/* Lightbox Modal */
+.lightbox { display: none; position: fixed; z-index: 9999; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+.lightbox-content { margin: auto; display: block; max-width: 80%; max-height: 80vh; border-radius: 5px; animation: zoom 0.3s; }
+.close-lightbox { position: absolute; top: 30px; right: 40px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.close-lightbox:hover { color: var(--accent-color); }
+@keyframes zoom { from {transform:scale(0)} to {transform:scale(1)} }
