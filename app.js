@@ -209,7 +209,6 @@ function closeLightbox() {
 }
 
 // --- Phase 4: Dynamic Testimonials Page (FINAL INDESTRUCTIBLE FIX) ---
-<script>
 document.addEventListener("DOMContentLoaded", async () => {
   const testimonialContainer = document.getElementById("testimonial-container");
   if (!testimonialContainer) return;
@@ -225,23 +224,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const text = await res.text();
 
     const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
-    if (!match) {
-      throw new Error("Google Sheets response format not found");
-    }
+    if (!match) throw new Error("Invalid Google Sheets response");
 
     const data = JSON.parse(match[1]);
-    const rows = data.table && data.table.rows ? data.table.rows : [];
+    const rows = data.table?.rows || [];
 
     testimonialContainer.innerHTML = "";
 
     rows.forEach((row) => {
-      const cells = row.c || [];
+      const c = row.c || [];
 
-      const photoUrl = cells[0]?.v || "";
-      const studentName = cells[1]?.v || "Student";
-      const companyName = cells[2]?.v || "";
-      const reviewText = cells[3]?.v || "";
-      const status = String(cells[4]?.v || "").toLowerCase();
+      const photoUrl = c[0]?.v || "";
+      const studentName = c[1]?.v || "Student";
+      const companyName = c[2]?.v || "";
+      const reviewText = c[3]?.v || "";
+      const status = String(c[4]?.v || "").toLowerCase();
 
       if (status !== "active") return;
 
@@ -258,7 +255,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         </div>
       `;
-
       testimonialContainer.appendChild(card);
     });
 
@@ -267,7 +263,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   } catch (err) {
     console.error("Testimonial load error:", err);
-    testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load testimonials. Check sheet sharing, gid, and browser console.</p>";
+    testimonialContainer.innerHTML = "<p style='color:red;'>Failed to load testimonials. Check sheet access and gid.</p>";
   }
 });
-</script>
