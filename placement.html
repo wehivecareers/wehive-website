@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placements & Success Stories | Wehive</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo-wrapper">
+                <img src="Logo.jpeg" alt="Wehive Logo" class="logo-img">
+                <div class="logo-text">
+                    <h2>Wehive</h2>
+                    <span>Learn • Build • Get Hired</span>
+                </div>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="placement.html" style="color: var(--secondary-color); font-weight: bold;">Placement</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="enquiry.html" class="btn-primary-small">Contact Us</a>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">About Us</a>
+            <a href="index.html#services">Services</a>
+            <a href="placement.html">Placement</a>
+            <a href="index.html#testimonials">Testimonials</a>
+            <a href="enquiry.html">Contact Us</a>
+        </div>
+    </nav>
+
+    <section class="gallery-header bg-light">
+        <div class="container section-title" style="padding-top: 50px;">
+            <h2>Dynamic Talent Showcase</h2>
+            <div class="underline"></div>
+            <p>Meet our successful candidates and explore our vibrant campus life.</p>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-filters">
+                <button class="filter-btn active" onclick="filterGallery('All', this)">All Media</button>
+                <button class="filter-btn" onclick="filterGallery('Placed Candidates', this)">Placed Candidates 🎉</button>
+                <button class="filter-btn" onclick="filterGallery('Classroom & Training', this)">Classroom & Training 💻</button>
+                <button class="filter-btn" onclick="filterGallery('Events & Celebrations', this)">Events & Celebrations 🌟</button>
+            </div>
+
+            <div class="gallery-grid" id="gallery-container">
+                <p style="text-align: center; width: 100%; color: var(--text-light);">Fetching success stories...</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="lightbox-modal" class="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h3>WEHIVE</h3>
+                <p>Your Gateway to IT Careers</p>
+            </div>
+            <div class="footer-contact">
+                <p><i class="fa-solid fa-location-dot"></i> Koranguchavadi, Salem</p>
+                <p><i class="fa-solid fa-phone"></i> +91-XXXXXXXXXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Wehive IT Training & Placement Consultancy.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
