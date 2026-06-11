@@ -1,3 +1,10 @@
+// Function to toggle the mobile hamburger menu
+function toggleMenu() {
+    document.getElementById("mobileMenu").classList.toggle("show");
+}
+
+// ... Keep your existing document.addEventListener code below this line!
+
 document.addEventListener("DOMContentLoaded", () => {
     
     // --- Phase 1: Running Numbers Animation Logic ---
