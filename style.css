@@ -46,12 +46,12 @@ body { color: var(--text-dark); line-height: 1.6; background-color: var(--white)
 .btn-secondary-small:hover { background-color: var(--primary-color); color: var(--white); border-color: var(--primary-color); }
 
 /* Clean Hero Section (Plain Transparent Overlay over Background Image) */
-.hero { 
-    /* Make sure your file is named EXACTLY BG.jpeg in your repository */
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./BG.jpeg') center/cover no-repeat;
-    color: var(--white); 
-    padding: 150px 0 130px 0; 
-    text-align: left; /* Aligns text to the left to match your new reference image */
+.hero {
+    background: url('./BG.png') center center/cover no-repeat;
+
+    color: var(--white);
+    padding: 150px 0 130px 0;
+    text-align: left;
 }
 
 /* Keeps the text on the left side so it doesn't cover the right-side graphics */
