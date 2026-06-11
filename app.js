@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Counter Data:", rows);
             
             // Trigger animations using the fetched data from the sheet
-            rows.forEach((row,index)=>{
+            rows.slice(1).forEach((row,index)=>{
 
     if(!row.c[1] || !row.c[1].v) return;
 
