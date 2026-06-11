@@ -1,9 +1,9 @@
 /* Global Reset & Modern Color Palette */
 :root {
-    --primary-color: #1a365d; /* Corporate Dark Blue */
-    --secondary-color: #6b46c1; /* Kept for icons/accents */
-    --accent-color: #dd6b20; /* High-converting Orange CTA */
-    --light-blue: #ebf8ff; /* Soft light blue for sections */
+    --primary-color: #1a365d; 
+    --secondary-color: #6b46c1; 
+    --accent-color: #dd6b20; 
+    --light-blue: #ebf8ff; 
     --text-dark: #2d3748;
     --text-light: #718096;
     --bg-light: #f7fafc;
@@ -34,66 +34,38 @@ body { color: var(--text-dark); line-height: 1.6; background-color: var(--white)
 
 /* Navbar & New Navigation Buttons */
 .navbar { background-color: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-}
-.logo-wrapper{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    text-decoration:none;
-}
+.nav-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
 
-.logo img{
-    height:65px;
-    width:auto;
-    display:block;
-    object-fit:contain;
-}
+.logo-wrapper{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+.logo img{ height:65px; width:auto; display:block; object-fit:contain; }
+.logo-text h2{ color: var(--primary-color); font-size: 2rem; line-height:1; margin:0; font-weight:700; }
+.logo-text span{ color: var(--text-light); font-size:0.9rem; letter-spacing:1px; }
 
-.logo-text h2{
-    color: var(--primary-color);
-    font-size: 2rem;
-    line-height:1;
-    margin:0;
-    font-weight:700;
-}
-
-.logo-text span{
-    color: var(--text-light);
-    font-size:0.9rem;
-    letter-spacing:1px;
-}
 .nav-links { list-style: none; display: flex; align-items: center; gap: 25px; }
 .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; }
 .nav-links a:hover { color: var(--secondary-color); }
-
 .nav-buttons { display: flex; gap: 15px; align-items: center; }
 .btn-secondary-small { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
 .btn-secondary-small:hover { background-color: var(--primary-color); color: var(--white); border-color: var(--primary-color); }
 
-/* Clean Hero Section (Plain Transparent Overlay over Background Image) */
-.hero {
-    background: url('./BG.png') center center/cover no-repeat;
+/* Hamburger Menu CSS */
+.menu-toggle { display: none; font-size: 28px; cursor: pointer; color: var(--primary-color); }
+.mobile-menu { display: none; flex-direction: column; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; position: absolute; top: 100%; left: 0; z-index: 999; }
+.mobile-menu a { padding: 15px 20px; text-decoration: none; color: var(--text-dark); border-bottom: 1px solid #eee; font-weight: 500; }
+.mobile-menu a:hover { background-color: var(--bg-light); color: var(--primary-color); }
+.mobile-menu.show { display: flex; }
 
-    color: var(--white);
-    padding: 150px 0 130px 0;
-    text-align: left;
+/* Clean Hero Section */
+.hero { 
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./BG.jpeg') center/cover no-repeat;
+    color: var(--white); 
+    padding: 150px 0 130px 0; 
+    text-align: left; 
 }
-
-/* Keeps the text on the left side so it doesn't cover the right-side graphics */
-.hero-content {
-    max-width: 600px; 
-}
-
+.hero-content { max-width: 600px; }
 .hero h1 { font-size: 3.8rem; margin-bottom: 20px; line-height: 1.2; }
 .highlight { color: #fbd38d; }
 .hero p { font-size: 1.15rem; margin-bottom: 35px; opacity: 0.95; line-height: 1.8; }
-
-/* Aligns the buttons to the left */
 .hero-buttons { display: flex; justify-content: flex-start; gap: 15px; }
 
 /* Dynamic Placement Counters */
@@ -119,97 +91,32 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
 .footer-brand p, .footer-contact p { color: #cbd5e0; margin-top: 10px; }
 .footer-bottom { text-align: center; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); color: #a0aec0; font-size: 0.9rem; }
 
-/* Mobile Responsive */
+/* =========================================
+   Mobile Responsive Rules
+   ========================================= */
 @media (max-width: 768px) {
+    /* Hide Desktop Nav, Show Hamburger */
+    .nav-links, .nav-buttons { display: none; }
+    .menu-toggle { display: block; }
+    .nav-container { justify-content: space-between; }
 
-    .logo img {
-        height: 50px;
-        max-width: 180px;
-    }
+    /* Resize Logo */
+    .logo img { height: 50px; max-width: 180px; }
+    .logo-text h2 { font-size: 1.4rem; }
+    .logo-text span { font-size: 0.75rem; }
 
-    .logo-text h2 {
-        font-size: 1.4rem;
-    }
+    /* Adjust Hero Section */
+    .hero { padding: 100px 0 80px 0; text-align: center; background-position: center center; }
+    .hero-content { max-width: 100%; padding: 0 20px; }
+    .hero h1 { font-size: 2.2rem; line-height: 1.3; }
+    .hero p { font-size: 1rem; line-height: 1.7; }
+    .hero-buttons { justify-content: center; flex-direction: column; gap: 12px; }
+    .hero-buttons a { width: 100%; text-align: center; }
 
-    .logo-text span {
-        font-size: 0.75rem;
-    }
+    /* Stack Grid Items */
+    .counter-grid { flex-direction: column; gap: 25px; }
+    .services-grid { grid-template-columns: 1fr; }
 
-    .hero {
-        padding: 100px 0 80px 0;
-        text-align: center;
-        background-position: center center;
-    }
-
-    .hero-content {
-        max-width: 100%;
-        padding: 0 20px;
-    }
-
-    .hero h1 {
-        font-size: 2.2rem;
-        line-height: 1.3;
-    }
-
-    .hero p {
-        font-size: 1rem;
-        line-height: 1.7;
-    }
-
-    .hero-buttons {
-        justify-content: center;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .hero-buttons a {
-        width: 100%;
-        text-align: center;
-    }
-
-    .counter-grid {
-        flex-direction: column;
-        gap: 25px;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        gap: 30px;
-        text-align: center;
-    }
-
-   @media (max-width:768px){
-
-    .nav-container{
-        flex-direction:column;
-        gap:10px;
-    }
-
-    .nav-links {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-    .nav-buttons{
-        display:none;
-    }
-
-    .logo img{
-        height:50px;
-    }
-
-   .logo-text h2{
-    font-size: 1.6rem;
-}
-
-  .logo-text span{
-    font-size: 0.8rem;
-}
-}
+    /* Center Footer */
+    .footer-content { flex-direction: column; gap: 30px; text-align: center; }
 }
