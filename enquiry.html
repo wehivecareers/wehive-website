@@ -173,13 +173,12 @@
             if(mobileInput.length !== 10) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Invalid Mobile Number',
-                    text: 'Please enter exactly 10 digits.',
+                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Invalid Number</h2>',
+                    html: '<p style="color: #4a5568;">Please enter exactly 10 digits for your mobile number.</p>',
                     confirmButtonColor: '#dd6b20'
                 });
                 return;
             }
-
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = "Sending Data...";
@@ -202,17 +201,35 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             }).then(() => {
+                // FIRE ONLY ONE EMAILJS TEMPLATE 
+                // (Make sure you enabled "Auto-Reply" inside template_xkogcur on the EmailJS website!)
                 return emailjs.send('service_957l5yi', 'template_xkogcur', formData);
             }).then(() => {
-                return emailjs.send('service_957l5yi', 'template_o0f3ukk', formData);
-            }).then(() => {
-                // Trigger Premium Success Popup
+                // Premium Branded Success Popup
                 Swal.fire({
+                    title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>',
+                    html: '<p style="color: #4a5568;">Your details have been securely sent. Our career counselors will contact you shortly!</p>',
                     icon: 'success',
-                    title: 'Enquiry Submitted!',
-                    text: 'We have received your details. Our career counselor will contact you soon.',
-                    confirmButtonColor: '#1a365d'
+                    background: '#f4f7f6',
+                    confirmButtonColor: '#dd6b20',
+                    confirmButtonText: 'Got it, Thanks!',
+                    backdrop: `rgba(26, 54, 93, 0.6)`
                 });
+                document.getElementById('enquiry-form').reset();
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Submission Error:", err);
+                // Premium Branded Error Popup
+                Swal.fire({
+                    icon: 'error',
+                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>',
+                    html: '<p style="color: #4a5568;">Something went wrong. Please check your connection and try again.</p>',
+                    confirmButtonColor: '#dd6b20'
+                });
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
                 document.getElementById('enquiry-form').reset();
                 btn.innerText = originalText;
                 btn.disabled = false;
