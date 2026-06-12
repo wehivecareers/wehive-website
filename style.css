@@ -226,7 +226,7 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
     .hero { 
         padding: 100px 0 80px 0; 
         text-align: center; 
-        background-position: 80% center; /* Shifts the image to show the graphics/person on the right */
+        background-position: right center !important; /* Forces the human and arrow to hug the right edge */
     }
     .hero-content { max-width: 100%; padding: 0 20px; }
     .hero h1 { font-size: 2.2rem; line-height: 1.3; }
