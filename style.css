@@ -58,7 +58,7 @@ body { color: var(--text-dark); line-height: 1.6; background-color: var(--white)
 
 /* Clean Hero Section */
 .hero { 
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./BG.jpeg') center/cover no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('BG.png') center/cover no-repeat;
     color: var(--white); 
     padding: 150px 0 130px 0; 
     text-align: left; 
