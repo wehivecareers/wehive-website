@@ -62,6 +62,7 @@
                 <form id="enquiry-form">
                     <input type="text" id="name" placeholder="Full Name *" required>
                     <input type="email" id="email" placeholder="Email Address *" required>
+                    
                     <input type="tel" id="phone" placeholder="Mobile Number *" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" title="Please enter exactly 10 digits" required>
                     
                     <select id="profile" required>
@@ -72,11 +73,7 @@
                     </select>
                     
                     <select id="course" required>
-                        <option value="" disabled selected>Select Program of Interest *</option>
-                        <option value="Full-Stack Development">Full-Stack Development</option>
-                        <option value="Java Development">Java Development</option>
-                        <option value="Python Development">Python Development</option>
-                        <option value="Cloud Computing">Cloud Computing</option>
+                        <option value="" disabled selected>Loading courses from database...</option>
                     </select>
                     
                     <textarea id="message" placeholder="Your Message (Optional)" rows="5"></textarea>
@@ -140,46 +137,45 @@
                 .then(res => res.text())
                 .then(text => {
                     const data = JSON.parse(text.substr(47).slice(0, -2));
-                    const rows = data.table.rows;
                     const courseSelect = document.getElementById("course");
                     
-                    // Clear hardcoded options and set default
                     courseSelect.innerHTML = '<option value="" disabled selected>Select Program of Interest *</option>';
                     
-                    rows.forEach(row => {
+                    data.table.rows.forEach(row => {
                         if (row.c[0] && row.c[2]) {
-                            const courseName = row.c[0].v;
-                            const status = row.c[2].v.toString().toLowerCase();
-                            // Only add if marked 'Active' in sheet
+                            const status = row.c[2].v.toString().toLowerCase().trim();
                             if (status === "active") {
                                 const option = document.createElement("option");
-                                option.value = courseName;
-                                option.innerText = courseName;
+                                option.value = row.c[0].v;
+                                option.innerText = row.c[0].v;
                                 courseSelect.appendChild(option);
                             }
                         }
                     });
                 })
-                .catch(err => console.error("Error fetching courses:", err));
+                .catch(err => {
+                    console.error("Error fetching courses:", err);
+                    document.getElementById("course").innerHTML = '<option value="" disabled selected>Error loading courses</option>';
+                });
         });
 
-        // 3. Handle Form Submission with Premium Popup
+        // 3. Handle Form Submission Safely
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Stops the page from refreshing
             
-            const mobileInput = document.getElementById('phone').value;
+            const mobileInput = document.getElementById('phone').value.trim();
             
-            // Extra check for strictly 10 digits
+            // Premium 10-digit validation popup
             if(mobileInput.length !== 10) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Invalid Mobile Number',
-                    text: 'Please enter Valid Mobile Number.',
+                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Invalid Number</h2>',
+                    html: '<p style="color: #4a5568;">Please enter exactly 10 digits for your mobile number.</p>',
                     confirmButtonColor: '#dd6b20'
                 });
-                return;
+                return; // Stop the script here if number is bad
             }
-            }
+
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = "Sending Data...";
@@ -196,33 +192,37 @@
             
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
-            fetch(googleScriptURL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            }).then(() => {
-                return emailjs.send('service_957l5yi', 'template_xkogcur', formData);
-            }).then(() => {
-                return emailjs.send('service_957l5yi', 'template_o0f3ukk', formData);
-            }).then(() => {
-                // Trigger Premium Success Popup
+            // Execute Google Sheets update and EmailJS at the exact same time
+            Promise.all([
+                fetch(googleScriptURL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                }),
+                // This triggers your ONLY template (which handles the alert AND auto-reply)
+                emailjs.send('service_957l5yi', 'template_xkogcur', formData)
+            ]).then(() => {
+                // Premium Success Popup
                 Swal.fire({
+                    title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>',
+                    html: '<p style="color: #4a5568;">Your details have been securely sent. Our career counselors will contact you shortly!</p>',
                     icon: 'success',
-                    title: 'Enquiry Submitted!',
-                    text: 'We have received your details. Our career counselor will contact you soon.',
-                    confirmButtonColor: '#1a365d'
+                    background: '#f4f7f6',
+                    confirmButtonColor: '#dd6b20',
+                    confirmButtonText: 'Got it, Thanks!',
+                    backdrop: `rgba(26, 54, 93, 0.6)`
                 });
                 document.getElementById('enquiry-form').reset();
                 btn.innerText = originalText;
                 btn.disabled = false;
             }).catch(err => {
                 console.error("Submission Error:", err);
-                // Trigger Premium Error Popup
+                // Premium Error Popup
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong. Please check your connection and try again.',
+                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>',
+                    html: '<p style="color: #4a5568;">Something went wrong. Please check your internet connection.</p>',
                     confirmButtonColor: '#dd6b20'
                 });
                 btn.innerText = originalText;
