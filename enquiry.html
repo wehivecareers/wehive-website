@@ -2,51 +2,170 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | Wehive</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
-    <nav class="navbar">...</nav>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo-wrapper">
+                <img src="Logo.jpeg" alt="Wehive Logo" class="logo-img">
+                <div class="logo-text">
+                    <h2>Wehive</h2>
+                    <span>Learn • Build • Get Hired</span>
+                </div>
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
 
-    <section class="enquiry-section" style="padding: 80px 0;">
-        <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="placement.html">Placement</a></li>
+                <li><a href="testimonial.html">Testimonials</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="enquiry.html" class="btn-primary-small" style="background-color: var(--primary-color); color: var(--white); border: 2px solid var(--primary-color);">Contact Us</a>
+            </div>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html" onclick="toggleMenu()">Home</a>
+            <a href="index.html#about" onclick="toggleMenu()">About Us</a>
+            <a href="index.html#services" onclick="toggleMenu()">Services</a>
+            <a href="placement.html" onclick="toggleMenu()">Placement</a>
+            <a href="testimonial.html" onclick="toggleMenu()">Testimonials</a>
+            <a href="enquiry.html" onclick="toggleMenu()">Contact Us</a>
+        </div>
+    </nav>
+
+    <section class="gallery-header bg-light">
+        <div class="container section-title" style="padding-top: 50px;">
+            <h2>Let’s Kickstart Your IT Career!</h2>
+            <div class="underline"></div>
+            <p>Have questions? Fill out the form below, and our career counselors will get back to you.</p>
+        </div>
+    </section>
+
+    <section class="enquiry-section">
+        <div class="container enquiry-grid">
+            
             <div class="form-wrapper">
-                <h2>Let’s Kickstart Your IT Career!</h2>
                 <form id="enquiry-form">
                     <input type="text" id="name" placeholder="Full Name *" required>
                     <input type="email" id="email" placeholder="Email Address *" required>
-                    <input type="tel" id="phone" placeholder="WhatsApp Number *" required>
-                    <select id="profile">
-                        <option>Fresh Graduate</option>
-                        <option>Engineering Student</option>
-                        <option>Career Switcher</option>
+                    <input type="tel" id="phone" placeholder="Mobile Number *" required>
+                    
+                    <select id="profile" required>
+                        <option value="" disabled selected>Select Your Current Profile *</option>
+                        <option value="Fresh Graduate">Fresh Graduate</option>
+                        <option value="Engineering Student">Engineering Student</option>
+                        <option value="Career Switcher">Career Switcher</option>
                     </select>
-                    <select id="course">
-                        <option>Full-Stack Development</option>
-                        <option>Java Development</option>
-                        <option>Python Development</option>
+                    
+                    <select id="course" required>
+                        <option value="" disabled selected>Select Program of Interest *</option>
+                        <option value="Full-Stack Development">Full-Stack Development</option>
+                        <option value="Java Development">Java Development</option>
+                        <option value="Python Development">Python Development</option>
+                        <option value="Cloud Computing">Cloud Computing</option>
                     </select>
-                    <textarea id="message" placeholder="Your Message"></textarea>
-                    <button type="submit" class="btn-primary">Request Free Career Counseling</button>
+                    
+                    <textarea id="message" placeholder="Your Message (Optional)" rows="5"></textarea>
+                    
+                    <button type="submit" class="btn-primary" style="width: 100%;">Request Free Career Counseling</button>
                 </form>
             </div>
-            <div class="contact-info">
+
+            <div class="contact-info-wrapper">
                 <h3>Quick Help</h3>
-                <p><i class="fa-solid fa-location-dot"></i> Wehive, 5/33, Indira Complex, Bangalore Bypass Road, Koranguchavadi, Salem - 636004.</p>
-                <p><i class="fa-solid fa-phone"></i> 9363323993, 6374694563, 9344816272</p>
-                <p><i class="fa-solid fa-envelope"></i> wehivecareers@gmail.com</p>
+                
+                <div class="contact-detail">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Wehive, 5/33, Indira Complex,<br>Bangalore Bypass Road,<br>Koranguchavadi, Salem - 636004.</p>
+                </div>
+                
+                <div class="contact-detail">
+                    <i class="fa-solid fa-phone"></i>
+                    <p>9363323993<br>6374694563<br>9344816272</p>
+                </div>
+                
+                <div class="contact-detail">
+                    <i class="fa-solid fa-envelope"></i>
+                    <p>wehivecareers@gmail.com</p>
+                </div>
             </div>
+
         </div>
     </section>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h3>WEHIVE</h3>
+                <p>Your Gateway to IT Careers</p>
+            </div>
+            <div class="footer-contact">
+                <p><i class="fa-solid fa-location-dot"></i> Koranguchavadi, Salem</p>
+                <p><i class="fa-solid fa-phone"></i> +91-9363323993</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Wehive IT Training & Placement Consultancy.</p>
+        </div>
+    </footer>
+
     <script>
-        (function(){ emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); })();
+        function toggleMenu() {
+            document.getElementById("mobileMenu").classList.toggle("show");
+        }
+
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
-                .then(() => alert("Success! We will contact you soon."));
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Sending Data...";
+            btn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('phone').value, // Matches Apps Script
+                profile: document.getElementById('profile').value,
+                course: document.getElementById('course').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Your EXACT Google Script URL
+            const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
+
+            fetch(googleScriptURL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            }).then(() => {
+                // EmailJS Logic (Just uncomment and add your keys when ready)
+                // emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this);
+
+                alert("Success! We will contact you soon.");
+                document.getElementById('enquiry-form').reset();
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error(err);
+                alert("Error sending data.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         });
     </script>
 </body>
