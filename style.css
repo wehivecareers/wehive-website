@@ -305,3 +305,33 @@ footer { background-color: var(--primary-color); color: var(--white); padding: 6
     display: flex; flex-direction: column;
 }
 .testi-profile { margin-top: auto; display: flex; align-items: center; }
+
+
+/* =========================================
+   Enquiry Page Styles
+   ========================================= */
+.enquiry-section { padding: 60px 0 90px 0; background: var(--bg-light); }
+.enquiry-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; align-items: start; }
+
+/* Left Side: Form */
+.form-wrapper { background: var(--white); padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 4px solid var(--accent-color); }
+.form-wrapper input, .form-wrapper select, .form-wrapper textarea { 
+    width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 5px; 
+    font-size: 1rem; background: var(--bg-light); outline: none; transition: 0.3s; 
+}
+.form-wrapper input:focus, .form-wrapper select:focus, .form-wrapper textarea:focus { 
+    border-color: var(--secondary-color); background: var(--white); 
+}
+.form-wrapper textarea { resize: vertical; }
+
+/* Right Side: Contact Info */
+.contact-info-wrapper { background: var(--primary-color); color: var(--white); padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.contact-info-wrapper h3 { font-size: 1.8rem; margin-bottom: 25px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; color: var(--white); }
+.contact-detail { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+.contact-detail i { font-size: 1.5rem; color: var(--accent-color); margin-top: 5px; }
+.contact-detail p { font-size: 1.05rem; line-height: 1.6; color: #e2e8f0; }
+
+@media (max-width: 768px) {
+    .enquiry-grid { grid-template-columns: 1fr; }
+    .form-wrapper, .contact-info-wrapper { padding: 25px; }
+}
