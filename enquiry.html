@@ -62,7 +62,7 @@
                 <form id="enquiry-form">
                     <input type="text" id="name" placeholder="Full Name *" required>
                     <input type="email" id="email" placeholder="Email Address *" required>
-                    <input type="tel" id="phone" placeholder="Mobile Number *" required>
+                    <input type="tel" id="phone" placeholder="Mobile Number *" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" title="Please enter exactly 10 digits" required>
                     
                     <select id="profile" required>
                         <option value="" disabled selected>Select Your Current Profile *</option>
@@ -124,55 +124,107 @@
     </footer>
 
     <script>
-        // Initialize EmailJS with your Public Key
+        // 1. Initialize EmailJS
         emailjs.init("oOS5FdNys9vwjNkw6");
 
         function toggleMenu() {
             document.getElementById("mobileMenu").classList.toggle("show");
         }
 
+        // 2. Fetch Courses Dynamically from Google Sheets
+        document.addEventListener("DOMContentLoaded", () => {
+            const sheetId = "19DepbetU09lkBzfUXZirUf8hwixpHUVCvg-Es-ppOOE";
+            const coursesUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=348837550`;
+            
+            fetch(coursesUrl)
+                .then(res => res.text())
+                .then(text => {
+                    const data = JSON.parse(text.substr(47).slice(0, -2));
+                    const rows = data.table.rows;
+                    const courseSelect = document.getElementById("course");
+                    
+                    // Clear hardcoded options and set default
+                    courseSelect.innerHTML = '<option value="" disabled selected>Select Program of Interest *</option>';
+                    
+                    rows.forEach(row => {
+                        if (row.c[0] && row.c[2]) {
+                            const courseName = row.c[0].v;
+                            const status = row.c[2].v.toString().toLowerCase();
+                            // Only add if marked 'Active' in sheet
+                            if (status === "active") {
+                                const option = document.createElement("option");
+                                option.value = courseName;
+                                option.innerText = courseName;
+                                courseSelect.appendChild(option);
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error("Error fetching courses:", err));
+        });
+
+        // 3. Handle Form Submission with Premium Popup
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const mobileInput = document.getElementById('phone').value;
+            
+            // Extra check for strictly 10 digits
+            if(mobileInput.length !== 10) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Mobile Number',
+                    text: 'Please enter exactly 10 digits.',
+                    confirmButtonColor: '#dd6b20'
+                });
+                return;
+            }
+
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = "Sending Data...";
             btn.disabled = true;
 
-            // Pack the data from the form
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
-                mobile: document.getElementById('phone').value,
+                mobile: mobileInput,
                 profile: document.getElementById('profile').value,
                 course: document.getElementById('course').value,
                 message: document.getElementById('message').value
             };
             
-            // Your active Google Script URL for the Google Sheet
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
-            // STEP 1: Send to Google Sheets
             fetch(googleScriptURL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             }).then(() => {
-                // STEP 2: Send 'Contact Us' alert to Wehive Team & CCs
                 return emailjs.send('service_957l5yi', 'template_xkogcur', formData);
             }).then(() => {
-                // STEP 3: Send 'Auto-Reply' confirmation to the Student
                 return emailjs.send('service_957l5yi', 'template_o0f3ukk', formData);
             }).then(() => {
-                // STEP 4: Success Message and Form Reset
-                alert("Success! Your enquiry has been submitted. Check your email for confirmation.");
+                // Trigger Premium Success Popup
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Enquiry Submitted!',
+                    text: 'We have received your details. Our career counselor will contact you soon.',
+                    confirmButtonColor: '#1a365d'
+                });
                 document.getElementById('enquiry-form').reset();
                 btn.innerText = originalText;
                 btn.disabled = false;
             }).catch(err => {
                 console.error("Submission Error:", err);
-                alert("Error sending data. Please check your connection and try again.");
+                // Trigger Premium Error Popup
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong. Please check your connection and try again.',
+                    confirmButtonColor: '#dd6b20'
+                });
                 btn.innerText = originalText;
                 btn.disabled = false;
             });
