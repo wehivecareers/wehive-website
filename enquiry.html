@@ -77,7 +77,7 @@
                     </select>
 
                     <div style="margin-bottom: 20px; text-align: left;">
-                        <label for="resume" style="font-size: 0.95rem; color: #1a365d; font-weight: 600; display: block; margin-bottom: 8px;">Attach Resume * (PDF, DOC, DOCX - Max 10MB)</label>
+                        <label for="resume" style="font-size: 0.95rem; color: #1a365d; font-weight: 600; display: block; margin-bottom: 8px;">Attach Resume * (PDF, DOC, DOCX - Max 5MB)</label>
                         <input type="file" id="resume" accept=".pdf, .doc, .docx" required style="width: 100%; box-sizing: border-box; padding: 12px; background: var(--white); border: 1px dashed #cbd5e0; border-radius: 5px; cursor: pointer;">
                     </div>
                     
@@ -190,7 +190,7 @@
                 });
         });
 
-        // 3. Handle Form Submission with Mandatory File Upload
+        // 3. Handle Form Submission with 5MB File Upload Limit
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
@@ -204,13 +204,13 @@
                 return; 
             }
 
-            // 2. Validate File (Mandatory check & 10MB limit)
+            // 2. Validate File & 5MB Limit (Prevents Google Server Crash)
             if (!file) {
                 Swal.fire({ icon: 'warning', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Resume Required</h2>', html: '<p style="color: #4a5568;">Please attach your resume to proceed.</p>', confirmButtonColor: '#dd6b20' });
                 return;
             }
-            if (file.size > 10 * 1024 * 1024) {
-                Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">File Too Large</h2>', html: '<p style="color: #4a5568;">Please upload a resume smaller than 10MB.</p>', confirmButtonColor: '#dd6b20' });
+            if (file.size > 5 * 1024 * 1024) { 
+                Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">File Too Large</h2>', html: '<p style="color: #4a5568;">Please upload a resume smaller than 5MB.</p>', confirmButtonColor: '#dd6b20' });
                 return;
             }
 
@@ -219,7 +219,7 @@
             btn.innerText = "Uploading & Sending...";
             btn.disabled = true;
 
-            // Base data object (Includes the heavy file)
+            // Base data object (Includes heavy file)
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
@@ -232,37 +232,34 @@
             
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
-            // Function to dispatch data
-            const executeSubmission = (finalData) => {
-                
-                // THE FIX: Create a lightweight clean copy of data specifically for EmailJS so it doesn't crash!
+            const executeSubmission = async (finalData) => {
+                // THE FIX: Pure lightweight data for EmailJS so it doesn't reject it
                 const cleanEmailData = {
-                    name: finalData.name,
-                    email: finalData.email,
-                    mobile: finalData.mobile,
-                    profile: finalData.profile,
-                    course: finalData.course,
-                    message: finalData.message,
+                    name: finalData.name, email: finalData.email, mobile: finalData.mobile,
+                    profile: finalData.profile, course: finalData.course, message: finalData.message,
                     fileName: finalData.fileName
                 };
 
-                Promise.all([
-                    // Send heavy data to Google Sheets/Drive
-                    fetch(googleScriptURL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(finalData) }),
-                    // Send lightweight clean data to EmailJS
-                    emailjs.send('service_957l5yi', 'template_xkogcur', cleanEmailData)
-                ]).then(() => {
+                try {
+                    // Step 1: Send heavy data to Google Sheets & Drive first
+                    await fetch(googleScriptURL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(finalData) });
+                    
+                    // Step 2: Send lightweight text alert to EmailJS
+                    await emailjs.send('service_957l5yi', 'template_xkogcur', cleanEmailData);
+
+                    // Step 3: Success!
                     Swal.fire({ title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>', html: '<p style="color: #4a5568;">Your details and resume have been securely sent.</p>', icon: 'success', background: '#f4f7f6', confirmButtonColor: '#dd6b20', backdrop: `rgba(26, 54, 93, 0.6)` });
                     document.getElementById('enquiry-form').reset();
                     btn.innerText = originalText; btn.disabled = false;
-                }).catch(err => {
-                    console.error("Error:", err);
-                    Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>', html: '<p style="color: #4a5568;">Something went wrong. Check connection.</p>', confirmButtonColor: '#dd6b20' });
+
+                } catch (err) {
+                    console.error("Submission Error:", err);
+                    Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>', html: '<p style="color: #4a5568;">Submission failed. Check your internet connection.</p>', confirmButtonColor: '#dd6b20' });
                     btn.innerText = originalText; btn.disabled = false;
-                });
+                }
             };
 
-            // 3. Process File into Base64 and Submit
+            // Process File and Submit
             const reader = new FileReader();
             reader.onload = function(event) {
                 formData.fileBase64 = event.target.result.split(',')[1];
