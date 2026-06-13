@@ -190,7 +190,7 @@
                 });
         });
 
-        // 3. Handle Form Submission with File Upload
+        // 3. Handle Form Submission with Mandatory File Upload
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
@@ -227,7 +227,7 @@
                 profile: document.getElementById('profile').value,
                 course: document.getElementById('course').value,
                 message: document.getElementById('message').value,
-                fileName: file ? file.name : "No file attached"
+                fileName: file.name
             };
             
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
