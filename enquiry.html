@@ -204,8 +204,12 @@
                 return; 
             }
 
-            // 2. Validate File Size (10MB limit)
-            if (file && file.size > 10 * 1024 * 1024) {
+            // 2. Validate File (Mandatory check & 10MB limit)
+            if (!file) {
+                Swal.fire({ icon: 'warning', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Resume Required</h2>', html: '<p style="color: #4a5568;">Please attach your resume to proceed.</p>', confirmButtonColor: '#dd6b20' });
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
                 Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">File Too Large</h2>', html: '<p style="color: #4a5568;">Please upload a resume smaller than 10MB.</p>', confirmButtonColor: '#dd6b20' });
                 return;
             }
@@ -244,19 +248,14 @@
                 });
             };
 
-            // 3. Process File if attached, otherwise submit normally
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    formData.fileBase64 = event.target.result.split(',')[1];
-                    formData.mimeType = file.type;
-                    executeSubmission(formData);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                formData.fileBase64 = ""; formData.mimeType = "";
+            // 3. Process File and Submit
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                formData.fileBase64 = event.target.result.split(',')[1];
+                formData.mimeType = file.type;
                 executeSubmission(formData);
-            }
+            };
+            reader.readAsDataURL(file);
         });
     </script>
 </body>
