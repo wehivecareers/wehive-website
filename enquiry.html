@@ -232,8 +232,7 @@
             
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
-            const executeSubmission = (finalData) => {
-                // 1. Prepare EmailJS data WITH your exact Google Drive Folder link
+            const executeSubmission = async (finalData) => {
                 const cleanEmailData = {
                     name: finalData.name, email: finalData.email, mobile: finalData.mobile,
                     profile: finalData.profile, course: finalData.course, message: finalData.message,
@@ -241,27 +240,34 @@
                     driveFolderLink: "https://drive.google.com/drive/folders/1CLV4BeRdjk1XDV6ZP5vaSLYCMU6x2frB?usp=sharing"
                 };
 
-                // 2. Fire and forget to Google Sheets (Bypasses all browser freezing issues)
-                fetch(googleScriptURL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(finalData)
-                }).catch(e => console.log("Google sync running in background."));
+                try {
+                    // 1. Await Google Script Submission
+                    await fetch(googleScriptURL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(finalData)
+                    });
+                    console.log("Google Script Triggered Successfully");
 
-                // 3. Send EmailJS and show success instantly
-                emailjs.send('service_957l5yi', 'template_xkogcur', cleanEmailData)
-                .then(() => {
+                    // 2. Await EmailJS Submission
+                    await emailjs.send('service_957l5yi', 'template_xkogcur', cleanEmailData);
+                    console.log("EmailJS Triggered Successfully");
+
+                    // 3. Success Popup
                     Swal.fire({ title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>', html: '<p style="color: #4a5568;">Your details and resume have been securely sent.</p>', icon: 'success', background: '#f4f7f6', confirmButtonColor: '#dd6b20', backdrop: `rgba(26, 54, 93, 0.6)` });
+                    
                     document.getElementById('enquiry-form').reset();
-                    btn.innerText = originalText; btn.disabled = false;
-                }).catch(err => {
-                    console.error("Submission Error:", err);
-                    Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>', html: '<p style="color: #4a5568;">Something went wrong sending the email.</p>', confirmButtonColor: '#dd6b20' });
-                    btn.innerText = originalText; btn.disabled = false;
-                });
-            };
+                    btn.innerText = originalText; 
+                    btn.disabled = false;
 
+                } catch (err) {
+                    console.error("FULL ERROR:", err);
+                    Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Error</h2>', text: "Something went wrong. Check the console for details.", confirmButtonColor: '#dd6b20' });
+                    btn.innerText = originalText; 
+                    btn.disabled = false;
+                }
+            };
             // Process File and Submit
             const reader = new FileReader();
             reader.onload = function(event) {
