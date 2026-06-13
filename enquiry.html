@@ -233,7 +233,6 @@
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
             const executeSubmission = async (finalData) => {
-                // THE FIX: Pure lightweight data for EmailJS so it doesn't reject it
                 const cleanEmailData = {
                     name: finalData.name, email: finalData.email, mobile: finalData.mobile,
                     profile: finalData.profile, course: finalData.course, message: finalData.message,
@@ -241,8 +240,13 @@
                 };
 
                 try {
-                    // Step 1: Send heavy data to Google Sheets & Drive first
-                    await fetch(googleScriptURL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(finalData) });
+                    // THE FIX: Changed to "text/plain" and removed "no-cors". 
+                    // This forces the browser to actually send the massive file string to Google!
+                    await fetch(googleScriptURL, { 
+                        method: "POST", 
+                        headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                        body: JSON.stringify(finalData) 
+                    });
                     
                     // Step 2: Send lightweight text alert to EmailJS
                     await emailjs.send('service_957l5yi', 'template_xkogcur', cleanEmailData);
