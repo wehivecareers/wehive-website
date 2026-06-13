@@ -75,6 +75,11 @@
                     <select id="course" required>
                         <option value="" disabled selected>Loading courses from database...</option>
                     </select>
+
+                    <div style="margin-bottom: 20px; text-align: left;">
+                        <label for="resume" style="font-size: 0.95rem; color: #1a365d; font-weight: 600; display: block; margin-bottom: 8px;">Attach Resume (PDF, DOC, DOCX - Max 10MB)</label>
+                        <input type="file" id="resume" accept=".pdf, .doc, .docx" style="width: 100%; box-sizing: border-box; padding: 12px; background: var(--white); border: 1px dashed #cbd5e0; border-radius: 5px; cursor: pointer;">
+                    </div>
                     
                     <textarea id="message" placeholder="Your Message (Optional)" rows="5"></textarea>
                     
@@ -185,75 +190,73 @@
                 });
         });
 
-        // 3. Handle Form Submission Safely
+        // 3. Handle Form Submission with File Upload
         document.getElementById('enquiry-form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Stops the page from refreshing
+            e.preventDefault(); 
             
             const mobileInput = document.getElementById('phone').value.trim();
-            
-            // Premium 10-digit validation popup
+            const fileInput = document.getElementById('resume');
+            const file = fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+            // 1. Validate Mobile
             if(mobileInput.length !== 10) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Invalid Number</h2>',
-                    html: '<p style="color: #4a5568;">Please enter exactly 10 digits for your mobile number.</p>',
-                    confirmButtonColor: '#dd6b20'
-                });
-                return; // Stop the script here if number is bad
+                Swal.fire({ icon: 'warning', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Invalid Number</h2>', html: '<p style="color: #4a5568;">Please enter exactly 10 digits.</p>', confirmButtonColor: '#dd6b20' });
+                return; 
+            }
+
+            // 2. Validate File Size (10MB limit)
+            if (file && file.size > 10 * 1024 * 1024) {
+                Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">File Too Large</h2>', html: '<p style="color: #4a5568;">Please upload a resume smaller than 10MB.</p>', confirmButtonColor: '#dd6b20' });
+                return;
             }
 
             const btn = this.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
-            btn.innerText = "Sending Data...";
+            btn.innerText = "Uploading & Sending...";
             btn.disabled = true;
 
+            // Base data object
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 mobile: mobileInput,
                 profile: document.getElementById('profile').value,
                 course: document.getElementById('course').value,
-                message: document.getElementById('message').value
+                message: document.getElementById('message').value,
+                fileName: file ? file.name : "No file attached"
             };
             
             const googleScriptURL = "https://script.google.com/macros/s/AKfycbymuN4kjPNDZZMtQLW_2mo5isCf6DDjyZbfn0reb2Q5VRkn3d6Flf7CGlwKlz5BgTvIjQ/exec";
 
-            // Execute Google Sheets update and EmailJS at the exact same time
-            Promise.all([
-                fetch(googleScriptURL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData)
-                }),
-                // This triggers your ONLY template (which handles the alert AND auto-reply)
-                emailjs.send('service_957l5yi', 'template_xkogcur', formData)
-            ]).then(() => {
-                // Premium Success Popup
-                Swal.fire({
-                    title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>',
-                    html: '<p style="color: #4a5568;">Your details have been securely sent. Our career counselors will contact you shortly!</p>',
-                    icon: 'success',
-                    background: '#f4f7f6',
-                    confirmButtonColor: '#dd6b20',
-                    confirmButtonText: 'Got it, Thanks!',
-                    backdrop: `rgba(26, 54, 93, 0.6)`
+            // Function to dispatch data to Google & EmailJS
+            const executeSubmission = (finalData) => {
+                Promise.all([
+                    fetch(googleScriptURL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(finalData) }),
+                    emailjs.send('service_957l5yi', 'template_xkogcur', finalData)
+                ]).then(() => {
+                    Swal.fire({ title: '<h2 style="color: #1a365d; margin:0;">🎉 Enquiry Submitted!</h2>', html: '<p style="color: #4a5568;">Your details and resume have been securely sent.</p>', icon: 'success', background: '#f4f7f6', confirmButtonColor: '#dd6b20', backdrop: `rgba(26, 54, 93, 0.6)` });
+                    document.getElementById('enquiry-form').reset();
+                    btn.innerText = originalText; btn.disabled = false;
+                }).catch(err => {
+                    console.error("Error:", err);
+                    Swal.fire({ icon: 'error', title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>', html: '<p style="color: #4a5568;">Something went wrong. Check connection.</p>', confirmButtonColor: '#dd6b20' });
+                    btn.innerText = originalText; btn.disabled = false;
                 });
-                document.getElementById('enquiry-form').reset();
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }).catch(err => {
-                console.error("Submission Error:", err);
-                // Premium Error Popup
-                Swal.fire({
-                    icon: 'error',
-                    title: '<h2 style="color: #1a365d; margin:0; font-size: 24px;">Oops...</h2>',
-                    html: '<p style="color: #4a5568;">Something went wrong. Please check your internet connection.</p>',
-                    confirmButtonColor: '#dd6b20'
-                });
-                btn.innerText = originalText;
-                btn.disabled = false;
-            });
+            };
+
+            // 3. Process File if attached, otherwise submit normally
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    formData.fileBase64 = event.target.result.split(',')[1];
+                    formData.mimeType = file.type;
+                    executeSubmission(formData);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                formData.fileBase64 = ""; formData.mimeType = "";
+                executeSubmission(formData);
+            }
         });
     </script>
 </body>
